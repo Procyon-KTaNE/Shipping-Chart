@@ -21,6 +21,8 @@ namespace ShippingChart
 
         public static void Main(string[] args)
         {
+            int rngSeed = 1;
+
             Boolean moduleExists = false;
             int attempts = 1;
 
@@ -150,9 +152,13 @@ namespace ShippingChart
                 }
 
                 // Splitting Eridan and Feferi
-                while (Array.IndexOf(characters, 14) / 4 == Array.IndexOf(characters, 15) / 4)
+                int eriBlock = Array.IndexOf(characters, 14) / 4;
+                int fefBlock = Array.IndexOf(characters, 15) / 4;
+                while (eriBlock == fefBlock)
                 {
                     new Random().Shuffle(characters);
+                    eriBlock = Array.IndexOf(characters, 14) / 4;
+                    fefBlock = Array.IndexOf(characters, 15) / 4;
                 }
 
                 // Get all possible sets of five suits that can appear on the module
@@ -236,7 +242,21 @@ namespace ShippingChart
 
                 Console.WriteLine("MODULE INTIIAL STATE\n");
 
-                //  Shipping chart
+                //  4x4 table of characters
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.Write(String.Format("{0}  |  {1}\n", names[characters[i]], names[characters[4 + i]]));
+                }
+                Console.WriteLine("--------+--------");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.Write(String.Format("{0}  |  {1}\n", names[characters[8 + i]], names[characters[12 + i]]));
+                }
+
+                Console.WriteLine(String.Format("\nSuits: {0}\n", suitsOnModule));
+                Console.WriteLine(String.Format("Relationship between Eridan and Feferi is: {0}\n", suitsOnModule[eriBlock + fefBlock - 1]));
+
+                //  Correct shipping chart
                 Console.Write("       ");
                 for (int i = 0; i < chartSize; i++)
                 {
@@ -253,22 +273,6 @@ namespace ShippingChart
                     }
                     Console.WriteLine();
                 }
-
-                //  4x4 table of characters
-                Console.WriteLine();
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.Write(String.Format("{0}  |  {1}\n", names[characters[i]], names[characters[4 + i]]));
-                }
-                Console.WriteLine("--------+--------");
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.Write(String.Format("{0}  |  {1}\n", names[characters[8 + i]], names[characters[12 + i]]));
-                }
-
-                // Other
-                Console.WriteLine(String.Format("\nSuits: {0}\n", suitsOnModule));
-                Console.WriteLine(String.Format("Relationship between Eridan and Feferi is: {0}", suitsOnModule[2]));
 
                 // Solution
                 Console.Write("\nSOLUTION:\n");
