@@ -19,127 +19,161 @@ namespace ShippingChart
             }
         }
 
+        public static string Convert(int num)
+        {
+            switch (num)
+            {
+                case 1:
+                    return "H";
+                case 2:
+                    return "D";
+                case 3:
+                    return "S";
+                case 4:
+                    return "C";
+                case 0:
+                    return " ";
+                default:
+                    return "error";
+            }
+        }
+
         public static void Main(string[] args)
         {
-            int rngSeed = 1;
+            int rngSeed = 1; // Edit as necessary
 
             Boolean moduleExists = false;
             int attempts = 1;
 
             do
             {
-                string[] names = new string[] { "John  ", "Rose  ", "Dave  ", "Jade  ", "Aradia", "Tavros", "Sollux", "Karkat", "Nepeta", "Kanaya", "Terezi", "Vriska", "Equius", "Gamzee", "Eridan", "Feferi" };
+                int erifefRelationshipIndex = new Random().Next(4);
 
+                string[] names = new string[] { "John  ", "Rose  ", "Dave  ", "Jade  ", "Aradia", "Tavros", "Sollux", "Karkat", "Nepeta", "Kanaya", "Terezi", "Vriska", "Equius", "Gamzee", "Eridan", "Feferi" };
                 // Generate random ordering of card suits (minus clubs) and blank spaces
                 // 1 = Heart
                 // 2 = Diamond
                 // 3 = Spade
                 // 4 = Club
                 // 0 = Blank
+                
                 int hdsCount = 23; // There are 69 relationship pairs lol
                 int cCount = 15;
                 int blanks = 120 - 3 * hdsCount - cCount;
-                List<int> numericalSuitsList = new List<int>();
+                List<int> numericalSuitsNoCList = new List<int>();
                 for (int i = 1; i <= 3; i++)
                 {
                     for (int j = 0; j < hdsCount; j++)
                     {
-                        numericalSuitsList.Add(i);
+                        numericalSuitsNoCList.Add(i);
                     }
                 }
                 for (int i = 0; i < blanks; i++)
                 {
-                    numericalSuitsList.Add(0);
+                    numericalSuitsNoCList.Add(0);
                 }
+                int[] numericalSuitsNoC = numericalSuitsNoCList.ToArray();
 
-                int[] numericalSuits = numericalSuitsList.ToArray();
 
-                do
-                {
-                    new Random().Shuffle(numericalSuits);
-                } while (numericalSuits[numericalSuits.Length - 1] == 0);
-
-                // Create blank shipping chart
+                // Make matrix of all charts for rng seed
                 int chartSize = 16;
-                int[,] ships = new int[chartSize, chartSize];
-                for (int row = 0; row < chartSize; row++)
+                int suits = 4;
+                int[,,] allCharts = new int[suits, chartSize, chartSize];
+
+                // Let's make this fucking thing
+                string[,,] allChartsLetters = new string[suits, chartSize, chartSize];
+                if(rngSeed == 1)
                 {
-                    for (int col = 0; col < chartSize; col++)
+                    string[] baseCase = new string[1024] { " ", "D", "H", "H", " ", "S", "C", " ", "H", "C", " ", "S", "H", "D", " ", "S", "D", " ", "H", "S", "C", "H", " ", "S", "D", "H", "D", " ", " ", "C", "S", " ", "H", "H", " ", "S", "D", "D", " ", "S", "C", " ", "H", "D", "D", "D", "C", " ", "H", "S", "S", " ", "H", " ", "H", "D", "S", "S", " ", "C", "C", " ", " ", "D", " ", "C", "D", "H", " ", "D", "H", "S", " ", " ", "H", "S", "S", "C", "S", "H", "S", "H", "D", " ", "D", " ", "D", " ", "D", " ", "C", "S", " ", "H", " ", "C", "C", " ", " ", "H", "H", "D", " ", "H", " ", "C", "D", " ", "S", " ", "S", "D", " ", "S", "S", "D", "S", " ", "H", " ", " ", "D", "H", " ", "S", "D", " ", "H", "H", "D", "C", "S", " ", "D", " ", " ", " ", " ", "D", "H", "D", "S", "C", " ", "C", "H", " ", "S", " ", " ", "C", "D", " ", " ", "D", "D", "H", "S", "D", "S", " ", "D", "H", " ", "H", "C", "D", "H", "D", "D", " ", "H", " ", "S", "H", "C", "S", " ", "D", "C", "S", "S", " ", " ", "H", "D", "H", " ", "C", " ", "S", "H", "H", " ", "D", "C", "S", " ", "S", "S", "D", "H", " ", "C", " ", " ", " ", " ", "D", "C", "D", " ", "C", "H", " ", "D", "S", "S", "S", " ", " ", " ", " ", " ", " ", "S", "C", " ", "S", " ", "S", " ", "C", "D", "H", "S", " ", " ", " ", "H", "S", " ", " ", "D", "H", "C", "D", "H", " ", "S", "C", "H", " ", " ", "H", " ", " ", "D", "D", "H", "H", " ", " ", "H", "S", "C", " ", "S", "H", "S", " ", "C", "D", " ", "H", " ", "S", "C", "C", "S", "D", "H", "H", "H", " ", "S", "S", "D", "D", "H", " ", "S", "D", " ", "D", "S", "D", " ", "H", " ", "C", " ", "C", " ", "H", " ", "S", " ", " ", "H", " ", "D", "S", " ", " ", "C", " ", "C", "H", "H", "H", "S", "D", " ", " ", "D", "H", "D", "C", "D", "C", "S", "S", " ", "S", "H", " ", "C", " ", "H", "D", " ", "C", " ", "D", " ", " ", "S", "S", "H", " ", " ", " ", "C", "D", " ", "H", "C", " ", "H", " ", "H", "D", " ", "D", " ", "S", "D", "H", "S", "S", "D", "D", " ", "H", " ", " ", "D", "H", "S", " ", "D", "D", " ", "S", "D", "D", "S", "C", "D", " ", " ", " ", "D", "C", "H", "D", " ", "S", "H", "C", "H", " ", " ", "D", " ", "H", "D", "D", " ", "S", "D", " ", "S", "D", "C", " ", "H", "H", " ", "C", " ", "D", "H", "C", "S", " ", "H", " ", "S", "H", "H", "S", "H", " ", "C", "S", "S", " ", "S", "H", "D", "H", " ", " ", "C", "S", " ", "H", " ", "C", " ", "S", "S", "D", " ", "D", " ", " ", " ", " ", " ", "C", " ", "S", "S", " ", "C", " ", "H", " ", "D", " ", "S", "S", "C", " ", " ", " ", "S", " ", "S", "C", "H", "S", " ", "S", "D", "S", "D", "H", "S", "C", " ", " ", "D", "C", "D", " ", "H", "H", " ", "D", " ", "H", "C", "H", " ", " ", "S", "D", " ", " ", "D", "H", "H", " ", "H", " ", "S", " ", "D", "D", "S", "H", "S", " ", " ", "D", " ", "H", "D", "C", " ", " ", "C", "D", "H", " ", "D", " ", " ", "S", "S", "H", "H", " ", "S", "D", "D", "D", "S", "C", " ", "H", " ", " ", " ", "S", "C", "H", "D", "S", " ", "H", "C", " ", "D", "S", " ", " ", "D", " ", " ", "C", "H", " ", "C", "D", "H", " ", "D", "H", "C", " ", " ", "S", "S", "S", " ", "S", "H", "H", " ", "D", "C", "D", " ", " ", " ", "D", " ", "D", "S", "S", "H", "C", " ", " ", " ", "D", " ", "H", " ", " ", "H", "S", "H", "D", "C", "D", "C", "S", "D", "S", "C", "S", "D", "C", " ", "H", " ", " ", "D", "H", " ", " ", "D", "H", "H", " ", "D", "C", "S", " ", "D", "S", " ", " ", " ", "H", "H", "D", "S", "H", "C", "D", "H", " ", " ", " ", " ", "H", "D", " ", " ", "C", "D", "C", "S", "D", "D", "D", " ", "H", " ", "S", "D", "D", "H", "H", "C", " ", "H", "C", "S", "H", " ", "S", "D", " ", "D", "S", "S", "C", " ", "H", "D", "H", " ", " ", "C", "S", "S", "H", " ", " ", " ", "S", "S", "D", " ", "D", "C", "C", " ", " ", "H", " ", " ", "S", " ", " ", " ", " ", "H", "C", "D", "S", "S", "S", "C", "H", " ", " ", " ", " ", "S", "S", "C", "S", "C", "S", "H", "H", "D", "H", "S", " ", " ", " ", "S", " ", "S", "C", "H", "H", " ", "D", "H", "C", "D", " ", "S", " ", " ", "S", " ", " ", "D", "C", "H", "S", "C", "D", "D", " ", "H", "S", "S", "H", " ", " ", " ", "D", " ", "H", "C", " ", " ", "S", " ", "D", "H", " ", "H", " ", "C", "S", " ", "C", "H", " ", "S", "D", "C", "D", "S", "D", " ", "H", " ", "S", "S", "H", " ", "H", "C", "S", " ", "S", " ", " ", "D", "S", "D", " ", " ", "D", "C", "H", "H", "S", " ", "D", "S", " ", "D", "H", "H", "C", "C", "H", "S", "S", "S", "S", "H", "C", " ", "C", " ", "D", " ", "D", "S", "D", " ", "D", "S", "H", "H", "D", " ", "D", "S", "D", " ", "H", "D", " ", "H", " ", "D", "D", "C", "C", " ", "S", "D", "D", " ", "S", "D", "H", "S", "H", " ", "H", "D", "H", " ", " ", "D", "C", "C", " ", "D", "D", "S", "C", "D", " ", "H", " ", "C", " ", "H", "D", " ", "H", "S", "H", "H", " ", "D", "C", " ", "D", "D", "C", " ", " ", "D", " ", "S", "D", " ", "S", " ", "H", " ", "H", "D", "D", "H", " ", " ", " ", "H", " ", "S", "H", "S", "S", "H", " ", " ", "S", "S", "C", " ", "H", "D", "H", " ", "C", " ", "S", " ", "H", " ", "S", "D", "S", "H", "C", " ", "D", " ", " ", "C", " ", " ", " ", " ", " ", "C", "S", "C", "S", "H", " ", "D", " ", "S", "S", " ", " ", " ", " ", " ", " ", "S", "H", "H", "S", "D", "S", "C", "H", "D", "H", "S", " ", " ", " ", "C", " ", " ", " ", "H", "H", " ", "D", "C", "S", " ", "S", " ", " ", " ", "C", " " };
+                    for(int chart = 0; chart < suits; chart++)
                     {
-                        ships[row, col] = 0;
-                    }
-                }
-
-                // Fill in chart with clubs first
-                int[] clubs = new int[16];
-                for (int i = 0; i < clubs.Length; i += 1)
-                {
-                    clubs[i] = i;
-                }
-                new Random().Shuffle(clubs);
-
-                for (int i = 0; i < 5; i++)
-                {
-                    int[] x = { clubs[3 * i], clubs[3 * i + 1], clubs[3 * i + 2] };
-                    int a = x.Max();
-                    int c = x.Min();
-                    int b = x.Sum() - a - c;
-
-                    ships[a, b] = 4;
-                    ships[a, c] = 4;
-                    ships[b, c] = 4;
-                }
-
-                // Fill in chart with other suits and blanks, making sure not to overlap clubs
-                int filled = 15;
-                while (filled < 120)
-                {
-                    for (int row = 0; row < chartSize; row++)
-                    {
-                        for (int col = 0; col < row; col++)
+                        for(int row = 0; row < chartSize; row++)
                         {
-                            if (ships[row, col] != 4)
+                            for(int col = 0; col < chartSize; col++)
                             {
-                                ships[row, col] = numericalSuits[filled - 15];
-                                filled++;
+                                allChartsLetters[chart, row, col] = baseCase[256 * chart + 16 * row + col];
                             }
                         }
                     }
                 }
-
-                // Add chart to its own transpose
-                int[,] shipsCopy = (int[,])ships.Clone();
-                for (int row = 0; row < chartSize; row++)
+                else
                 {
-                    for (int col = 0; col < chartSize; col++)
+                    for (int index = 0; index < suits; index++)
                     {
-                        ships[row, col] = ships[row, col] + shipsCopy[col, row];
-                    }
-                }
+                        int chart = index + 1;
 
-                // Convert numbers to card suits
-                string[,] shippingChart = new string[chartSize, chartSize];
-                for (int row = 0; row < chartSize; row++)
-                {
-                    for (int col = 0; col < chartSize; col++)
-                    {
-                        switch (ships[row, col])
+                        do
                         {
-                            case 1:
-                                shippingChart[row, col] = "H";
-                                break;
-                            case 2:
-                                shippingChart[row, col] = "D";
-                                break;
-                            case 3:
-                                shippingChart[row, col] = "S";
-                                break;
-                            case 4:
-                                shippingChart[row, col] = "C";
-                                break;
-                            case 0:
-                                shippingChart[row, col] = " ";
-                                break;
+                            new Random().Shuffle(numericalSuitsNoC);
+                        } while (numericalSuitsNoC[numericalSuitsNoC.Length - 1] != chart && chart < 4);
+                            
+                        // Create blank shipping charts
+                        for (int row = 0; row < chartSize; row++)
+                        {
+                            for (int col = 0; col < chartSize; col++)
+                            {
+                                allCharts[index, row, col] = 0;
+                           }
+                        }
+                            
+                        // Fill in the charts with clubs first
+                        int[] clubs = new int[16];
+                        for (int i = 0; i < clubs.Length; i += 1)
+                        {
+                            clubs[i] = i;
+                        }
+                        do
+                        {
+                            new Random().Shuffle(clubs);
+                        } while ((chart < 4 && Array.IndexOf(clubs, 14) / 3 == Array.IndexOf(clubs, 15) / 3) || (chart == 4 && Array.IndexOf(clubs, 14) / 3 != Array.IndexOf(clubs, 15) / 3));
+                            
+                        for (int i = 0; i < 5; i++)
+                        {
+                            int[] x = { clubs[3 * i], clubs[3 * i + 1], clubs[3 * i + 2] };
+                            int a = x.Max();
+                            int c = x.Min();
+                            int b = x.Sum() - a - c;
+                                
+                            allCharts[index, a, b] = 4;
+                            allCharts[index, a, c] = 4;
+                            allCharts[index, b, c] = 4;
+                        }
+                            
+                        // Fill in chart with other suits and blanks, making sure not to overlap clubs
+                        int filled = 15;
+                        while (filled < 120)
+                        {
+                            for (int row = 0; row < chartSize; row++)
+                            {
+                                for (int col = 0; col < row; col++)
+                                {
+                                    if (allCharts[index, row, col] != 4)
+                                    {
+                                        allCharts[index, row, col] = numericalSuitsNoC[filled - 15];
+                                       filled++;
+                                    }
+                                }
+                            }
+                        }
+                            
+                        // Add chart to its own transpose
+                        int[,,] allChartsClone = (int[,,])allCharts.Clone();
+                        for (int row = 0; row < chartSize; row++)
+                        {
+                            for (int col = 0; col < chartSize; col++)
+                            {
+                                allCharts[index, row, col] = allCharts[index, row, col] + allChartsClone[index, col, row];
+                            }
+                        }
+                            
+                        // Convert numbers to card suits
+                            
+                        for (int row = 0; row < chartSize; row++)
+                        {
+                            for (int col = 0; col < chartSize; col++)
+                            {
+                                allChartsLetters[index, row, col] = Convert(allCharts[index, row, col]);
+                            }
                         }
                     }
                 }
@@ -152,13 +186,19 @@ namespace ShippingChart
                 }
 
                 // Splitting Eridan and Feferi
-                int eriBlock = Array.IndexOf(characters, 14) / 4;
-                int fefBlock = Array.IndexOf(characters, 15) / 4;
-                while (eriBlock == fefBlock)
+                do
                 {
                     new Random().Shuffle(characters);
-                    eriBlock = Array.IndexOf(characters, 14) / 4;
-                    fefBlock = Array.IndexOf(characters, 15) / 4;
+                } while (Array.IndexOf(characters, 14) / 4 == Array.IndexOf(characters, 15) / 4);
+
+                // Picking correct chart
+                string[,] correctChartLetters = new string[16, 16];
+                for (int row = 0; row < chartSize; row++)
+                {
+                    for (int col = 0; col < chartSize; col++)
+                    {
+                        correctChartLetters[row, col] = allChartsLetters[erifefRelationshipIndex, row, col];
+                    }
                 }
 
                 // Get all possible sets of five suits that can appear on the module
@@ -171,14 +211,19 @@ namespace ShippingChart
                         {
                             for (int n = 8; n < 12; n++)
                             {
-                                if (ships[characters[i], characters[j]] == ships[characters[m], characters[n]] && !shippingChart[characters[i], characters[m]].Equals(" ") && !shippingChart[characters[i], characters[n]].Equals(" ") && !shippingChart[characters[i], characters[j]].Equals(" ") && !shippingChart[characters[m], characters[j]].Equals(" ") && !shippingChart[characters[n], characters[j]].Equals(" "))
+                                if (correctChartLetters[characters[i], characters[j]].Equals(correctChartLetters[characters[m], characters[n]])
+                                    && !correctChartLetters[characters[i], characters[m]].Equals(" ")
+                                    && !correctChartLetters[characters[i], characters[n]].Equals(" ")
+                                    && !correctChartLetters[characters[i], characters[j]].Equals(" ")
+                                    && !correctChartLetters[characters[m], characters[j]].Equals(" ")
+                                    && !correctChartLetters[characters[n], characters[j]].Equals(" "))
                                 {
                                     string[] moduleSuits = new string[5];
-                                    moduleSuits[0] = shippingChart[characters[i], characters[m]];
-                                    moduleSuits[1] = shippingChart[characters[i], characters[n]];
-                                    moduleSuits[2] = shippingChart[characters[i], characters[j]];
-                                    moduleSuits[3] = shippingChart[characters[m], characters[j]];
-                                    moduleSuits[4] = shippingChart[characters[n], characters[j]];
+                                    moduleSuits[0] = correctChartLetters[characters[i], characters[m]];
+                                    moduleSuits[1] = correctChartLetters[characters[i], characters[n]];
+                                    moduleSuits[2] = correctChartLetters[characters[i], characters[j]];
+                                    moduleSuits[3] = correctChartLetters[characters[m], characters[j]];
+                                    moduleSuits[4] = correctChartLetters[characters[n], characters[j]];
                                     string moduleSuitsString = string.Join("", moduleSuits);
                                     moduleSuitsStringList.Add(moduleSuitsString);
                                 }
@@ -186,7 +231,26 @@ namespace ShippingChart
                         }
                     }
                 }
+
+                // Remove invalid suits configurations
+                for (int i = moduleSuitsStringList.Count - 1; i >= 0 ; i--)
+                {
+                    if(!(moduleSuitsStringList[i])[Array.IndexOf(characters, 14) / 4 + Array.IndexOf(characters, 15) / 4 - 1].ToString().Equals(Convert(erifefRelationshipIndex + 1)))
+                    {
+                        moduleSuitsStringList.RemoveAt(i);
+                    }
+                }
                 string[] allModuleSuits = moduleSuitsStringList.ToArray();
+
+                if (allModuleSuits.Length > 0)
+                {
+                    moduleExists = true;
+                }
+                else
+                {
+                    attempts++;
+                    continue;
+                }
 
                 string[] uniqueElements = moduleSuitsStringList.Where(el => moduleSuitsStringList.Count(el2 => el2 == el) == 1).ToArray();
                 if (uniqueElements.Length > 0)
@@ -212,14 +276,19 @@ namespace ShippingChart
                         {
                             for (int n = 8; n < 12; n++)
                             {
-                                if (ships[characters[i], characters[j]] == ships[characters[m], characters[n]] && !string.IsNullOrEmpty(shippingChart[characters[i], characters[j]]))
+                                if (correctChartLetters[characters[i], characters[j]].Equals(correctChartLetters[characters[m], characters[n]])
+                                    && !correctChartLetters[characters[i], characters[m]].Equals(" ")
+                                    && !correctChartLetters[characters[i], characters[n]].Equals(" ")
+                                    && !correctChartLetters[characters[i], characters[j]].Equals(" ")
+                                    && !correctChartLetters[characters[m], characters[j]].Equals(" ")
+                                    && !correctChartLetters[characters[n], characters[j]].Equals(" "))
                                 {
                                     string[] moduleSuits = new string[5];
-                                    moduleSuits[0] = shippingChart[characters[i], characters[m]];
-                                    moduleSuits[1] = shippingChart[characters[i], characters[n]];
-                                    moduleSuits[2] = shippingChart[characters[i], characters[j]];
-                                    moduleSuits[3] = shippingChart[characters[m], characters[j]];
-                                    moduleSuits[4] = shippingChart[characters[n], characters[j]];
+                                    moduleSuits[0] = correctChartLetters[characters[i], characters[m]];
+                                    moduleSuits[1] = correctChartLetters[characters[i], characters[n]];
+                                    moduleSuits[2] = correctChartLetters[characters[i], characters[j]];
+                                    moduleSuits[3] = correctChartLetters[characters[m], characters[j]];
+                                    moduleSuits[4] = correctChartLetters[characters[n], characters[j]];
                                     string moduleSuitsString = string.Join("", moduleSuits);
 
                                     if (moduleSuitsString == suitsOnModule)
@@ -236,10 +305,9 @@ namespace ShippingChart
                     }
                 }
 
-                // LOGGING 
+                // LOGGING
 
                 // Initial module information
-
                 Console.WriteLine("MODULE INTIIAL STATE\n");
 
                 //  4x4 table of characters
@@ -254,7 +322,7 @@ namespace ShippingChart
                 }
 
                 Console.WriteLine(String.Format("\nSuits: {0}\n", suitsOnModule));
-                Console.WriteLine(String.Format("Relationship between Eridan and Feferi is: {0}\n", suitsOnModule[eriBlock + fefBlock - 1]));
+                Console.WriteLine(String.Format("Relationship between Eridan and Feferi on module is: {0}\n", suitsOnModule[Array.IndexOf(characters, 14) / 4 + Array.IndexOf(characters, 15) / 4 - 1]));
 
                 //  Correct shipping chart
                 Console.Write("       ");
@@ -269,7 +337,7 @@ namespace ShippingChart
                     Console.Write(String.Format("{0} ", names[row]));
                     for (int col = 0; col < chartSize; col++)
                     {
-                        Console.Write(String.Format("  {0}    ", shippingChart[row, col]));
+                        Console.Write(String.Format("  {0}    ", correctChartLetters[row, col]));
                     }
                     Console.WriteLine();
                 }
@@ -279,43 +347,6 @@ namespace ShippingChart
                 Console.WriteLine(String.Join("\n", charactersOnModule));
 
                 Console.WriteLine("\nFound {0} possible module(s) on attempt #{1}", uniqueElements.Length, attempts);
-
-                // Other printing formats
-
-                //  Print numeric shipping chart
-                //Console.WriteLine("NUMERIC SHIPPING CHART");
-                //for (int row = 0; row < chartSize; row++)
-                //{
-                //    for (int col = 0; col < chartSize; col++)
-                //    {
-                //        Console.Write(String.Format("{0}  ", ships[row, col]));
-                //    }
-                //    Console.WriteLine();
-                //}    
-
-                //  Print final shipping chart (no labels)
-                //Console.WriteLine();
-                //Console.WriteLine("SHIPPING CHART WITHOUT LABELS");
-                //for (int row = 0; row < chartSize; row++)
-                //{
-                //    for (int col = 0; col < chartSize; col++)
-                //    {
-                //        Console.Write(String.Format("{0}  ", shippingChart[row, col]));
-                //    }
-                //    Console.WriteLine();
-                //}
-
-                //  Print unfolded shipping chart
-                //Console.WriteLine();
-                //Console.WriteLine("UNFOLDED SHIPPING CHART");
-                //for (int row = 0; row < chartSize; row++)
-                //{
-                //    for (int col = 0; col < chartSize; col++)
-                //    {
-                //        Console.Write(shippingChart[row, col]);
-                //    }
-                //}
-
             } while (!moduleExists);
         }
     }
